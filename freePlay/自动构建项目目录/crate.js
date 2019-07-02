@@ -22,7 +22,7 @@ let appRoot = __dirname + "/" + appName;
 
 // 判断所创建的文件夹是否存在
 if(fs.existsSync(appRoot)){
-    console.log("项目已经存在了，请勿重复创建111");
+    console.log("项目已经存在了，请勿重复创建");
     return;
 }
 
