@@ -15,23 +15,27 @@ commander.version("1.0.0","-v, --version");
 const fs = require("fs");
 
 // 添加子命令
-
+const subCommander = commander.command('<path>');
 
 // 实现命令的具体逻辑
-commander.action(() => {
+commander.action((path) => {  //这里的path参数就是在命令中定义的<path>
     try{
         // 读取文件夹
-        const files = fs.readdirSync( __dirname );
+        const files = fs.readdirSync( path );
         console.log(files);
     }
     catch(e){
+        // 开发过程中，可以把错误打印出来，实际发布以后应该屏蔽错误信息
         console.log(e);
     }
 })
 
 
-
-
+// 在把process.argv交给parse解析之前进行一个简单的处理，少于3个参数，表示使用的是默认值
+if (process.argv.length < 3) {
+    process.argv.push(__dirname);
+}
+// console.log(process.argv);
 
 
 // 输出
