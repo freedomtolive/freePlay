@@ -91,7 +91,21 @@
 				.keyword('orange')
 				.rgb(15, 100, 204)	
 
-	
+#####inquire
+	交互式命令，提问用户，收集用户输入数据
+
+	安装
+		npm i inquirer
+		
+	使用
+		require('inquirer')
+
+		inquirer.prompt(questions).then(answers=>{
+			...
+		})
+
+####去掉node
+	需要利用cmd工具，即用cmd启动cmd文件，利用cmd文件启动对应的js
 
 
 
