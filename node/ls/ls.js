@@ -15,10 +15,10 @@ commander.version("1.0.0","-v, --version");
 const fs = require("fs");
 
 // 添加子命令
-const subCommander = commander.command('<path>');
+const subCommander = commander.command(' <path>');
 
 // 实现命令的具体逻辑
-commander.action((path) => {  //这里的path参数就是在命令中定义的<path>
+commander.action((a) => {  //这里的参数就是在命令中定义的path
     try{
         // 读取文件夹
         const files = fs.readdirSync( path );
@@ -29,6 +29,12 @@ commander.action((path) => {  //这里的path参数就是在命令中定义的<p
         console.log(e);
     }
 })
+
+// 添加子命令(多个参数时)   如果是多个参数时，则用多个参数对应
+/* const subCommander = commander.command(' <path> <path1>');
+commander.action((a,b) => { 
+    console.log(a,b)
+}) */
 
 
 // 在把process.argv交给parse解析之前进行一个简单的处理，少于3个参数，表示使用的是默认值
