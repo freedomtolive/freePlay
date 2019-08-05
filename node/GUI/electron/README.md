@@ -21,12 +21,34 @@
 	设置项目入口文件：
 		“main”: “index.js”
 		项目入口文件是 Electron 第一个加载的文件，是整个项目的入口
+
     主进程与渲染进程
         在 Electron 中，被 Electron 直接运行的脚本（package.json 中指定的 main 脚本）被称为主进程
         在 Electron 中用来展示界面的 web 页面都运行在一个独立的，属于它自己的渲染进程中
         我们可以通过主进程来创建 web 页面，但一个 web 页面被销毁的时候，对应的渲染进程也会被终止
         主进程管理所有的 web 页面和它们对应的渲染进程
         一个应用程序有且仅有一个主进程
+
+	electron & node.js
+		在 Electron 中，Electron 同时为 主进程 与 渲染进程暴露了 Node.js 的所有接口
+		也就是说，我们可以在 Electron 的主进程 与 渲染进程 中使用 Node.js 的 API
+
+		同时，在 Electron 中，也提供了大量的 API 去帮助我们开发桌面应用程序，我们可以通过 require('electron') 来引入它们
+		需要注意的是，API 是区分进程类型的，也就是有的 API 只能在特定（主进程或渲染进程中进行使用）
+
+		安装
+			npm i electron
+			require('electron')
+
+		BrowserWindow 类
+			创建和控制浏览器窗口
+
+			new BrowserWindow( [options] )
+				options：窗口选项
+
+			api:
+				https://electronjs.org/docs/api/browser-window
+
 
 
 
