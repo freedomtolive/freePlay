@@ -7,6 +7,46 @@
     <title>app</title>
 </head>
 <body>
-    <h3>app</h3>
+    <h1>app</h1>
+    <button>按钮</button>
+
+    <script>
+        // 注：在渲染进程中不能直接获取到主进程中的数据
+        const {remote, ipcRenderer} = require('electron');
+
+        /*
+           一： 在渲染进程中也可以使用electron对象
+                electron对象下面有的属性方法只能在主进程中使用，有的是在渲染进程中有的
+                我们可以通过渲染进程中的electron下有一个子对象：remote 来访问主进程的数据
+                remote下的getGlobal方法可获取主进程中的全局数据
+        */
+        // console.log(remote.getGlobal("username"));
+
+        /*
+            二：IPC
+        */
+        // const buttons = document.querySelectorAll('button');
+
+        // buttons[0].onclick = function() {
+        //     ipcRenderer.send('getData', 'userName');
+        // }
+        // ipcRenderer.on('sendData', function(e, data) {
+        //     console.log(data);
+        // });
+        
+        /*
+            三：主进程主动发送给渲染进程
+        */
+        ipcRenderer.on('hello', function(e, ...data) {
+            console.log(data);
+        });
+
+         // 当按钮2被点击的时候，产生一个数据(利用localstroge做页面间的数据传递)
+         buttons[1].onclick = function(){
+            // storage
+            localStorage.setItem('val', 'zMouse');
+        }
+
+    </script>
 </body>
 </html>
