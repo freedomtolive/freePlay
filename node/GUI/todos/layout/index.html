@@ -13,8 +13,8 @@
     <div id="root">
         <div class="todoApp">
             <div class="header">
-                <span class="iconfont icon-guanbi close"></span>
-                <span class="iconfont icon-zuixiaohua min"></span>
+                <span class="iconfont icon-guanbi close" @click="closeApp"></span>
+                <span class="iconfont icon-zuixiaohua min" @click="minApp"></span>
             </div>
             <div class="todo">
                 <h1>{{title}}</h1>
@@ -27,24 +27,25 @@
                     >
                         <span 
                             class="iconfont checkbox"
+                            :class="todo.done?'icon-duoxuanxuanzhong':'icon-duoxuanweixuan'"
                         ></span>
                         <label class="text">{{todo.title}}</label>
                         <span 
-                            class="iconfont icon-lajitong recycle-bin"
+                            class="iconfont icon-lajitong recycle-bin" @click="delet(todo)"
                         ></span>
                     </li>
                 </ul>
             </div>
             <div class="filter">
                 <div class="filter-box">
-                    <b class="filter-item">DONE</b>
-                    <b class="filter-item">TODO</b>
-                    <b class="filter-item">ALL</b>
+                    <b class="filter-item" :class="{'selected': type=='done'}" @click = "choose('done')">DONE</b>
+                    <b class="filter-item" :class="{'selected': type=='undone'}" @click = "choose('undone')">TODO</b>
+                    <b class="filter-item" :class="{'selected': type=='all'}" @click = "choose('all')">ALL</b>
                 </div>
             </div>
             <div class="add-todo">
                 <div>
-                    <input class="new-todo" v-model="newTodo" placeholder="这里输入内容" />
+                    <input class="new-todo" v-model="newTodo" placeholder="这里输入内容" @keydown.enter="addTodo" />
                 </div>
             </div>
         </div>
