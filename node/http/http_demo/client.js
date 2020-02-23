@@ -22,7 +22,7 @@ const fs = require("fs");
  */
 const client = http.request({
     //tcp
-    host : "www.baidu.com", //主机
+    host : "www.baidu.com", //主机（给百度发送信息）
     port : 80,  //端口
 
     // http
@@ -35,7 +35,9 @@ const client = http.request({
     let content = Buffer.alloc(0);
 
     res.on('data', data => {
-        //将接收到的数据拼接起来，组成一个完整数据，解决数据传输中的分包问题
+        // 返回的数据是二进制数据
+        
+        // 把buffer对象进行拼接，将接收到的数据拼接起来，组成一个完整数据，解决数据传输中的分包问题
         content = Buffer.concat([content, data], content.length + data.length);
         // console.log(data.toString());
     })
