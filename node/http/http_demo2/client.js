@@ -23,6 +23,7 @@ const client = http.request({
 })
 
 
+
 // 请求的发送需要调用下面的方法
 client.write('abcbcbc');
 client.end();
