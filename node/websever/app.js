@@ -8,50 +8,18 @@
 
 const http = require("http");
 const fs = require("fs");
+const Mime= require("./libs/Mime");
+
+// 处理文件
+let mime = new Mime();
+console.log(mime.getType("css"));
+console.log(mime.getType("html"));
+console.log(mime.getType("text/html"));
+
+
 const app = http.createServer((req,res) => {
     // 当有用户请求时所触发的函数
     console.log("有人请求了")
-
-    /**
-     * req:
-     *      IncomingMessage对象（提供了访问http请求相关数据的接口）
-     *      参数：
-     *          http.Version http的版本
-     *          .method 请求使用的方法
-     *          .socket 与当前连接相关的net.Socket对象
-     *          等其他参数
-     * res：
-     *      
-     */
-
-    // 像客户端发送数据需要用到res对象
-    // res.write();
-    // end方法中传参会自动调用write方法;
-    // res.end("hello");
-
-
-    /**
-     *  我们需要根据不同的url返回对应的数据
-     *      获取url地址: req.url
-     *      
-     * 
-     * */ 
-
-    /** 设置并写入头信息
-     *   res.writeHead(状态码，状态码描述，头信息)
-     * 
-     *   res.writeHead(200,http.STATUS_CODES[200],{
-     *       "content-Type":"text/html;charset=utf8"
-     *   });
-     *
-     *  设置头信息
-     *  res.setHeader(头信息名称，值)
-     * 
-     *  头信息设置需要注意的问题：
-     *      头信息的写入设置必须在res的weite、end之前
-     *
-     * */ 
-
 
     /**
      *  服务端必须对客户的每一次请求做做处理，否则就会出问题
@@ -63,34 +31,40 @@ const app = http.createServer((req,res) => {
 
     //  静态资源与动态资源分开处理，静态资源用fs模块直接读取文件,返回给客户端
 
+    /**
+     * 我们直接让用户访问对应的文件/static/index.html
+     * 用户在url后所带的路径，我们直接把他关联到服务器本地的目录中
+     * 
+     */
+
     let content = "";
 
-    switch(req.url){
-        case "/":
-            sendStaticFn(__dirname+ '/static/index.html');
-        break;
-        case "/list":
-            sendStaticFn(__dirname+ '/static/list.html');
-        break;
-        case "/view":
-            sendStaticFn(__dirname+ '/static/view.html');
-        break;
-        case "/index.css":
-            sendStaticFn(__dirname+ '/static/index.css',{"content-Type":"text/css;charset=utf8"});
-            res.end();
-        break;
-        default:
-            // 头信息在write、end之前调用，否则无效（头信息的设置必须早与内容的发送）
-
-           
-            sendStaticFn(__dirname+ '/static/404.html', null, 404);
-        break;
-    }
+    sendStaticFn(__dirname+ req.url);
 
     function sendStaticFn(fileName, headers={"content-Type":"text/html;charset=utf8"} ,statusCode=200){
-        res.writeHead(statusCode,http.STATUS_CODES[statusCode],headers);
-        content = fs.readFileSync(fileName);
-        res.end(content);
+
+        if(fs.existsSync(fileName)){
+            // 判断文件是否存在，如果存在就输出
+
+            // 获取扩展名，从.后开始截取
+            let ext = fileName.substring(fileName.lastIndexOf('.') + 1)
+
+            if(!ext){
+                ext = "txt";
+            }
+
+            // 根据扩展名输出对应的MIME（利用MIME框架）
+
+            
+            res.writeHead(statusCode,http.STATUS_CODES[statusCode],headers);
+            content = fs.readFileSync(fileName);
+            res.end(content);
+
+        }else{
+            // 如果不存在
+            sendStaticFn(__dirname+ '/static/404.html', null, 404);
+        }
+
     }
 
 })
