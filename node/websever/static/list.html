@@ -4,11 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="/index.css">    
+    <link rel="stylesheet" href="/static/index.css">  
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>  
 </head>
 <body>
-    <h1>list</h1>
+    <div id="app">
+        <h1>list</h1>
+        <ul>
+            <li v-for="user of users">{{user}}</li>
+        </ul>
+    </div>
 </body>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            users: []
+        },
+        created(){
+            fetch('/user').then( res => {
+                    // console.log(res);
 
+                    // 转化后返回的还是一个Promise对象（这里是异步操作），需要then后再操作
+                    return res.json();
+                } ).then( data => {
+                    // 将数据
+                    // console.log(data);
+                    this.users = data;
+                } )
+        }
+    })
+</script>
 
 </html>
