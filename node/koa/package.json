@@ -9,10 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "koa": "^2.11.0"
+    "koa": "^2.11.0",
+    "koa-static-cache": "^5.1.2"
   },
   "devDependencies": {
-    "koa": "^2.11.0",
     "supervisor": "^0.12.0"
   }
 }
