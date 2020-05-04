@@ -121,8 +121,8 @@ const router = new Router()
 const render = Swig({
     root : __dirname + '/views',
     autoescape: true,
-    cache: false,
-    ext: '.html'
+    cache: false,   //缓存
+    ext: '.html'    //后缀
 })
 // 把render函数绑定在app上
 app.context.render = co.wrap(render);
