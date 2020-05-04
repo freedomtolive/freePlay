@@ -89,6 +89,21 @@ const co = require('co');
                 在使用 include 的模板中可以使用 name
 
 
+    koa-bodyparser：body解析、数据提交
+	安装
+		npm i koa-bodyparser
+	使用
+		const bodyParser = require('koa-bodyparser')
+		app.use( bodyParser([opts]) )
+            该中间件会在解析来自正文的数据以后，把解析后的数据挂载在ctx.request.body下面
+            
+            opts
+                - enableTypes: 允许解析的类型，['json', 'form']
+                - encoding：编码，默认 utf-8
+                - formLimit：urlencode 编码类型数据的最大size，默认 56kb
+                - jsonLimit：json 格式数据最大size，默认 1mb
+                - textLimit：文本格式数据最大size，默认 1mb
+                - strict：是否是严格默认，json只接受数组和对
 
 */
 
@@ -122,6 +137,7 @@ const render = Swig({
     root : __dirname + '/views',
     autoescape: true,
     cache: false,   //缓存
+    // cache: "memory",   //memory : 把解析后的结果保存在内存中，避免每次访问都去解析模板，一般用于线上生成环境
     ext: '.html'    //后缀
 })
 // 把render函数绑定在app上

@@ -1,0 +1,8 @@
+/* body{
+    color:red;
+} */
+
+.done{
+    text-decoration: line-through;
+    color:#ccc;
+}
