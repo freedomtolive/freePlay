@@ -13,11 +13,16 @@
     <ul>
         {% for task in datas.tasks %}
             <li {% if task.done %}class="done"{% endif %}>
-                <input type="checkbox" {% if task.done %}checked{% endif %}>
+                <input type="checkbox" onclick = "change({{task.id}})" {% if task.done %}checked{% endif %}>
                 [{{task.id}}] - {{task.title}}
-                <a href="">删除</a>
+                <a href="/remove/{{task.id}}">删除</a>
             </li>
         {% endfor %}
     </ul>
+    <script>
+        function change(id){
+            window.location.href = '/change/' + id;
+        }
+    </script>
 </body>
 </html>

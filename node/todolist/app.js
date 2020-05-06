@@ -59,6 +59,14 @@ router.get('/',async ctx => {
 
 /**
  * 添加数据处理页面：用来通过添加页面提交的数据
+ *  
+ *  注意：
+ *      querystring与当前请求的方式是没有关系的，无论是get还是post，querystring一样
+ *      都可以传递数据，querystring与get没有任何一毛钱的关系
+ * 
+ *      get 方式请求不能操作正文
+ *      let title_1 = ctx.query.title;
+ * 
  */
 // get请求
 // router.get('/posttask', ctx => {
@@ -68,11 +76,33 @@ router.get('/',async ctx => {
 // })
 
 // post请求
-router.post('/posttask', ctx => {
+router.post('/posttask',async ctx => {
     // 后台接收并处理提交的数据
     // koa-bodyparser处理过的post提交的数据会在ctx.request.body中
-    let title = ctx.request.body.title;
-    ctx.body = '接收提交的页面' + title;
+    let title = ctx.request.body.title || "";
+    // ctx.body = '接收提交的页面' + title;
+
+    // 如果标题不存在，渲染失败的模板
+    if (!title) {
+        ctx.body = await ctx.render('message', {
+            msg: '请输入任务标题',
+            href: 'javascript:history.back();'
+        });
+        return;
+    }
+
+    // 添加数据
+    datas.tasks.push({
+        id: ++datas.maxId,
+        title: ctx.request.body.title,
+        done: false
+    });
+
+    // 渲染添加成功的模板
+    ctx.body = await ctx.render('message', {
+        msg: '添加成功',
+        href: '/'
+    });
 })
 
 
@@ -89,15 +119,32 @@ router.get('/add',async ctx => {
 /**
  * 改变状态
  */
-router.get('/change/:id',ctx => {
-    ctx.body = '/change/' + ctx.params.id;
+router.get('/change/:id',async ctx => {
+    // ctx.body = '/change/' + ctx.params.id;
+
+    let id = ctx.params.id;
+    datas.tasks.forEach( task => {
+        if(task.id == id){
+            task.done = !task.done       
+        } 
+
+        ctx.response.redirect('/');
+    })
 })
 
 /**
  * 删除
  */
-router.get('/remove/:id',ctx => {
-    ctx.body = '/remove/' + ctx.params.id;
+router.get('/remove/:id',async ctx => {
+    // ctx.body = '/remove/' + ctx.params.id;
+
+    let id = ctx.params.id;
+    datas.tasks = datas.tasks.filter( task => id != task.id )
+    
+    ctx.body = await ctx.render('message', {
+        msg: '删除成功',
+        href: '/'
+    })
 })
 
 
@@ -108,4 +155,4 @@ app.use(router.routes());
 
 
 
-app.listen(80);
+app.listen(8888);
