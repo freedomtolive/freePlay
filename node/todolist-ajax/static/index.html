@@ -8,16 +8,22 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
 </head>
 <body>
-    <!-- <h1>todolist</h1>
-    <button>获取数据</button>
-    <hr>
-    <ul>
-        <li v-for="todo of todos">
-            <input type="checkbox" @click.prevent="toggle(todo.id)" :checked="todo.done" />
-            <span>{{todo.title}}</span>
-            <button @click="remove(todo.id)">删除</button>
-        </li>
-    </ul> -->
+    <!-- 
+        <h1>todolist</h1>
+        <button>获取数据</button>
+
+        <script>
+            let button = document.querySelector("button");
+
+            button.onclick = function(){
+                fetch('/').then( res => {
+                    return res.text();
+                }).then( data => {
+                    console.log(data)
+                })
+            }
+        </script>
+    -->
 
     <div id="app">
 
@@ -38,15 +44,7 @@
     </div>
 
     <script>
-        // let button = document.querySelector("button");
-
-        // button.onclick = function(){
-        //     fetch('/').then( res => {
-        //         return res.text();
-        //     }).then( data => {
-        //         console.log(data)
-        //     })
-        // }
+        
 
         new Vue({
             el: '#app',
@@ -67,6 +65,59 @@
                         this.todos = data.data;
                     }
                 });
+            },
+            methods : {
+                add(){
+                    // console.log(this.newTask);
+                    fetch('/add', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json;charset=utf-8'
+                        },
+                        body: JSON.stringify({"title":this.newTask})
+                    }).then( res => {
+                        return res.json()
+                    }).then( data => {
+                        this.todos.push(data.data);
+                        this.newTask = "";
+                    });
+                },
+                toggle(id){
+                    fetch('/toggle', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json;charset=utf-8'
+                        },
+                        body: JSON.stringify({id})
+                    }).then( res => {
+                        return res.json()
+                    }).then( data => {
+                        // console.log(data);
+                        if(data.code == 0){
+                           let todo = this.todos.find(todo => todo.id == id)
+                           todo.done = data.data.done
+                        }else{
+                            alert(data.data);
+                        }
+                    } )
+                },
+                remove(id){
+                    fetch('/remove', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json;charset=utf-8'
+                        },
+                        body: JSON.stringify({id})
+                    }).then( res => {
+                        return res.json()
+                    }).then( data => {
+                        if(data.code == 0){
+                           this.todos = this.todos.filter( todo => todo.id != id );
+                        }else{
+                            alert(data.data);
+                        }
+                    } )
+                }
             }
         })
     </script>
