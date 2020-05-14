@@ -16,7 +16,7 @@
         <hr />
         <ul>
             <li v-for="todo of todos" :key="todo.id">
-                <span>{{todo.title}}</span>
+                <span>{{todo.id}} - {{todo.title}}</span>
             </li>
         </ul>
     </div>
@@ -36,7 +36,7 @@
                     fetch('/todos').then(res => {
                         return res.json();
                     }).then( data => {
-                        this.todos = data.data;
+                        this.todos = data.data.todos;
                     });
                 },
                 add(){
