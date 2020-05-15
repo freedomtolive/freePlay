@@ -66,15 +66,29 @@
 
         
         // 查询3条数据，并且从第(page - 1) * 3开始查询（分页的基本原理）
-        const page = 1; //第几页
-        const prepage = 4; //每页显示几条
-        const [todos] = await connection.query(`SELECT id,title,done FROM todos ORDER BY id DESC LIMIT ${prepage} OFFSET ${(page - 1) * prepage}`) ;
+        // 接受参数（通过query传参的方式）
+        let page = ctx.query.page || 1; //第几页
+        let prepage = ctx.query.prepage || 4; //每页显示几条
+        let type = ctx.query.type; //已完成未完成查询
+        let where = "";
+        // 如果type值存在，则拼where语句
+        if(type){
+            where = 'WHERE done=' + type;
+        }
+
+        let sql = `SELECT id,title,done FROM todos ${where}`;
+        let [todosAll] = await connection.query(sql); //总页码数
+        let pages = Math.ceil(todosAll.length / prepage);
+
+        const sql2 = `SELECT id,title,done FROM todos ${where} ORDER BY id DESC LIMIT ${prepage} OFFSET ${(page - 1) * prepage}`;
+        const [todos] = await connection.query(sql2) ;
 
         ctx.body = {
             code: 0,
             data : {
                 page,
                 prepage,
+                pages,
                 todos
             }
         }

@@ -5,6 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>app</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <style>
+        li {
+            line-height: 40px;
+        }
+        .done span {
+            text-decoration: line-through;
+            color: #cccccc;
+        }
+        .pages {
+            margin: 10px;
+        }
+        .pages a {
+            margin: 15px;
+        }
+        .pages a.active {
+            color: red;
+        }
+        .footer {
+            margin: 10px;
+        }
+        .footer button.active {
+            background: yellow;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -19,6 +43,14 @@
                 <span>{{todo.id}} - {{todo.title}}</span>
             </li>
         </ul>
+        <div class="pages">
+            <a href="" :class="{active: n == page}" @click.prevent="changePage(n)" v-for="n of pages">{{n}}</a>
+        </div>
+        <div class="footer">
+            <button :class="{active: type===''}" @click="changeType('')">所有</button>
+            <button :class="{active: type===1}" @click="changeType(1)">已完成</button>
+            <button :class="{active: type===0}" @click="changeType(0)">未完成</button>
+        </div>
     </div>
 
     <script>
@@ -26,17 +58,22 @@
             el: '#app',
             data: {
                 newValue: '',
-                todos: []
+                todos: [],
+                prepage: 4,
+                page : 1,
+                type: '',
+                pages: 0
             },
             created(){
                 this.getData();
             },
             methods: {
                 getData(){
-                    fetch('/todos').then(res => {
+                    fetch('/todos?type='+ this.type +'&page=' + this.page + '&prepage=' + this.prepage).then(res => {
                         return res.json();
                     }).then( data => {
                         this.todos = data.data.todos;
+                        this.pages = data.data.pages;
                     });
                 },
                 add(){
@@ -54,7 +91,14 @@
                             this.newValue = '';
                         }
                     })
-                    
+                },
+                changePage(n){
+                    this.page = n;
+                    this.getData();
+                },
+                changeType(m){
+                    this.type = m;
+                    this.getData();
                 }
             }
         })
