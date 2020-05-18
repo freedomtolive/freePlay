@@ -58,6 +58,8 @@
          * 如果页码从1开始算，那么对应的记录应该    LIMIT 3 OFFSET (页码-1 * 3)
          * 
          * 总页码
+         * 
+         * 
          */
 
 
@@ -73,6 +75,7 @@
         let where = "";
         // 如果type值存在，则拼where语句
         if(type){
+            // WHERE 条件选择
             where = 'WHERE done=' + type;
         }
 
@@ -81,7 +84,8 @@
         let pages = Math.ceil(todosAll.length / prepage);
 
         const sql2 = `SELECT id,title,done FROM todos ${where} ORDER BY id DESC LIMIT ${prepage} OFFSET ${(page - 1) * prepage}`;
-        const [todos] = await connection.query(sql2) ;
+        const [todos] = await connection.query(sql2);
+
 
         ctx.body = {
             code: 0,
@@ -122,6 +126,36 @@
         }
         
     });
+
+    router.post('/toggle', async ctx=> {
+        const  id = Number(ctx.request.body.id) || 0;
+        const  todo = Number(ctx.request.body.todo) || 0;
+
+         /**
+         * 
+         * 查询参数占位符
+         *   WHERE ??=?  :  ?? 表示字段或表名，? 表示值
+         * 
+         */
+        // 修改该id值得done字段
+        let sql = "UPDATE todos SET ??=? WHERE ??=?";
+        let [rs] = await connection.query(sql, ['done', todo, 'id', id]);
+     
+
+        if (rs.affectedRows > 0) {
+            ctx.body = {
+                code: 0,
+                data: '修改成功'
+            }
+        } else {
+            ctx.body = {
+                code: 2,
+                data: '修改失败'
+            }
+        }
+
+
+    })
 
     app.use( router.routes() );
 
