@@ -42,6 +42,7 @@
             <li v-for="todo of todos" :key="todo.id">
                 <input type="checkbox" :checked="todo.done" @click.prevent="toggle(todo.id,!todo.done)">
                 <span>{{todo.id}} - {{todo.title}}</span>
+                <button @click="remove(todo.id)">删除</button>
             </li>
         </ul>
         <div class="pages">
@@ -108,6 +109,21 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify( {id, todo: Number(todo)})
+                    }).then( res => {
+                        return res.json();
+                    }).then( data => {
+                        if (!data.code) {
+                            this.getData();
+                        }
+                    })
+                },
+                remove(id){
+                    fetch('/remove', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify( {id})
                     }).then( res => {
                         return res.json();
                     }).then( data => {

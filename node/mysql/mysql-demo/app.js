@@ -157,6 +157,25 @@
 
     })
 
+    router.post('/remove', async ctx => {
+        const id = Number(ctx.request.body.id)  || 0;
+        // 删除语句
+        let sql = "DELETE FROM todos WHERE ??=?";
+        let [rs] = await connection.query(sql, ['id', id]);
+
+        if (rs.affectedRows > 0) {
+            ctx.body = {
+                code: 0,
+                data: '删除成功'
+            }
+        } else {
+            ctx.body = {
+                code: 2,
+                data: '删除失败'
+            }
+        }
+    })
+
     app.use( router.routes() );
 
 
